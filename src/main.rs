@@ -15,7 +15,7 @@ struct Args {
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
 enum Platform {
     // Favicons that are compatible with almost all web browsers
-    Legacy,
+    Web,
     // Include favicons features that are supported by major modern browsers
     Modern,
     // Enable Android-based favicon support. Includes manifest.
@@ -29,7 +29,7 @@ fn main() {
 
     println!("{}", args.input.as_path().to_str().unwrap());
 
-    let mut platforms = Vec::from([Platform::Legacy, Platform::Modern]);
+    let mut platforms = Vec::from([Platform::Web, Platform::Modern]);
 
     if !args.platforms.is_none() {
         platforms = args.platforms.unwrap();
