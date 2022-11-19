@@ -1,16 +1,21 @@
 use clap::{Parser, ValueEnum};
 use std::path::PathBuf;
-use std::error;
 
 #[derive(Parser)]
 #[command(version, about)]
 /// Generate a complete and ready-to-use favicons for your websites
 pub struct Args {
     #[arg(value_name = "source_image", value_hint = clap::ValueHint::DirPath)]
-    pub input: PathBuf,
+    // Image source
+    pub source: PathBuf,
 
     #[arg(short = 'p', value_name = "platforms", value_enum)]
+    // Platforms that should be supported
     pub platforms: Option<Vec<Platform> >,
+
+    #[arg(short = 'f', value_name = "fill", default_value_t = false)]
+    // Ignore original aspect ratio from the image source
+    pub fill: bool,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
@@ -29,8 +34,8 @@ pub enum Platform {
 pub fn parse_args() -> Result<Args, String> {
     let mut args = Args::parse();
 
-    if !args.input.exists() {
-        return Err("Input file does not exists".to_string());
+    if !args.source.exists() {
+        return Err("Source file does not exists".to_string());
     }
 
     if args.platforms.is_none() {

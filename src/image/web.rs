@@ -1,0 +1,1 @@
+    pub fn generate_ico() -> image::Image;

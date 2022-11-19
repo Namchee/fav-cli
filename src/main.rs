@@ -1,8 +1,8 @@
 use std::process::exit;
-
 use colored::Colorize;
 
 mod args;
+mod image;
 
 fn main() {
     let args: args::Args;
@@ -14,4 +14,6 @@ fn main() {
             exit(0);
         },
     }
+
+    image::generate_image(args);
 }
