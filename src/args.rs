@@ -18,7 +18,7 @@ pub struct Args {
     pub fill: bool,
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug, Hash)]
 pub enum Platform {
     // Favicons that are compatible with almost all web browsers
     Web,
