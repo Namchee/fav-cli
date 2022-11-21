@@ -39,7 +39,7 @@ pub fn parse_args() -> Result<Args, String> {
     }
 
     if args.platforms.is_none() {
-        args.platforms = Option::from(Vec::from([Platform::Web, Platform::Modern]));
+        args.platforms = Option::from(Vec::from([Platform::Web]));
     }
 
     return Ok(args);
