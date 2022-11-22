@@ -16,6 +16,10 @@ pub struct Args {
     #[arg(short = 'f', value_name = "fill", default_value_t = false)]
     // Ignore original aspect ratio from the image source
     pub fill: bool,
+
+    #[arg(value_name = "source_image", value_hint = clap::ValueHint::DirPath)]
+    // Output folder
+    pub output: Option<PathBuf>,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug, Hash)]
@@ -39,7 +43,7 @@ pub fn parse_args() -> Result<Args, String> {
     }
 
     if args.platforms.is_none() {
-        args.platforms = Option::from(Vec::from([Platform::Web]));
+        args.platforms = Option::from(Vec::from([Platform::Web, Platform::Modern]));
     }
 
     return Ok(args);

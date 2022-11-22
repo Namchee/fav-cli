@@ -1,17 +1,23 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, io::Write};
 use std::ffi::OsStr;
 
 use std::fs;
 
 use crate::args::{Args, Platform};
 
+struct OutputFile {
+    size: u32,
+    name: String,
+}
+
 pub fn generate_image(args: Args) {
-    let size_map: HashMap<Platform, Vec<u32> > = HashMap::from([
-        (Platform::Web, vec![512]),
-        (Platform::Android, vec![192, 512]),
-        (Platform::Apple, vec![180]),
+    let size_map: HashMap<Platform, Vec<OutputFile> > = HashMap::from([
+        (Platform::Web, vec![OutputFile{ size: 32, name: "favicon.ico".to_string() }]),
+        (Platform::Android, vec![OutputFile{ size: 192, name: "192.png".to_string() }, OutputFile{ size: 512, name: "512.png".to_string() }]),
+        (Platform::Apple, vec![OutputFile{ size: 180, name: "apple_touch_icon.png".to_string() }]),
     ]);
     
+    // TODO: use this to check if should rasterize or not
     let ext = args.source.extension()
         .and_then(OsStr::to_str)
         .unwrap();
@@ -28,17 +34,32 @@ pub fn generate_image(args: Args) {
         let sizes = size_map.get(platform);
 
         if !sizes.is_none() {
-            let sz = sizes.unwrap()[0];
+            let target = sizes.unwrap();
 
-            let mut pixmap = tiny_skia::Pixmap::new(sz, sz).unwrap();
-            resvg::render(
-                &svg,
-                resvg::usvg::FitTo::Size(sz, sz),
-                tiny_skia::Transform::default(),
+            for output in target.iter() {
+                let mut pixmap = resvg::tiny_skia::Pixmap::new(
+                    output.size, 
+                    output.size,
+                ).unwrap();
+
+                resvg::render(
+                    &svg,
+                    resvg::usvg::FitTo::Size(output.size, output.size),
+                    resvg::tiny_skia::Transform::default(),
                  pixmap.as_mut(),
-            ).unwrap();
+                ).unwrap();
 
-            pixmap.save_png(std::path::Path::new("test.png"));
+                let result = pixmap.save_png(
+                    std::path::PathBuf::from(&output.name),
+                );
+
+                if result.is_err() {    
+                    println!("error")
+                }
+            }
+        } else {
+            let mut file = fs::File::create("icon.svg");
+            file.unwrap().write_all(input.as_bytes());
         }
     }
 }
