@@ -1,3 +1,5 @@
+use std::path::{PathBuf};
+use std::str::FromStr;
 use std::{collections::HashMap, io::Write};
 use std::ffi::OsStr;
 
@@ -49,16 +51,19 @@ pub fn generate_image(args: Args) {
                  pixmap.as_mut(),
                 ).unwrap();
 
-                let result = pixmap.save_png(
-                    std::path::PathBuf::from(&output.name),
-                );
+                let mut parent = std::path::PathBuf::from("output");
+                parent.push(&output.name);
+
+                let result = pixmap.save_png(parent);
 
                 if result.is_err() {    
                     println!("error")
                 }
             }
         } else {
-            let mut file = fs::File::create("icon.svg");
+            let file = fs::File::create(
+                PathBuf::from_str("icon.svg").unwrap(),
+            );
             file.unwrap().write_all(input.as_bytes());
         }
     }

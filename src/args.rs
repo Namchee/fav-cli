@@ -1,5 +1,5 @@
 use clap::{Parser, ValueEnum};
-use std::path::PathBuf;
+use std::{path::PathBuf, env};
 
 #[derive(Parser)]
 #[command(version, about)]
@@ -37,6 +37,7 @@ pub enum Platform {
 // Parse shell arguments and assign defaults if `None`
 pub fn parse_args() -> Result<Args, String> {
     let mut args = Args::parse();
+    let cwd = env::current_dir().unwrap();
 
     if !args.source.exists() {
         return Err("Source file does not exists".to_string());
@@ -44,6 +45,14 @@ pub fn parse_args() -> Result<Args, String> {
 
     if args.platforms.is_none() {
         args.platforms = Option::from(Vec::from([Platform::Web, Platform::Modern]));
+    }
+
+    if args.output.is_none() {
+        let mut output_path = PathBuf::new();
+        output_path.push(cwd);
+        output_path.push("output");
+
+        args.output = Option::from(output_path);
     }
 
     return Ok(args);
