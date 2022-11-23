@@ -1,9 +1,7 @@
 use std::path::{PathBuf};
-use std::str::FromStr;
+use std::fs;
 use std::{collections::HashMap, io::Write};
 use std::ffi::OsStr;
-
-use std::fs;
 
 use crate::args::{Args, Platform};
 
@@ -32,6 +30,8 @@ pub fn generate_image(args: Args) {
         &opts.to_ref(),
     ).unwrap();
 
+    let output_folder = args.output.unwrap();
+
     for platform in args.platforms.unwrap().iter() {
         let sizes = size_map.get(platform);
 
@@ -51,7 +51,7 @@ pub fn generate_image(args: Args) {
                  pixmap.as_mut(),
                 ).unwrap();
 
-                let mut parent = std::path::PathBuf::from("output");
+                let mut parent = PathBuf::from(output_folder.as_os_str());
                 parent.push(&output.name);
 
                 let result = pixmap.save_png(parent);
@@ -61,10 +61,15 @@ pub fn generate_image(args: Args) {
                 }
             }
         } else {
-            let file = fs::File::create(
-                PathBuf::from_str("icon.svg").unwrap(),
-            );
-            file.unwrap().write_all(input.as_bytes());
+            let mut parent = PathBuf::from(output_folder.as_os_str());
+            parent.push("icon.svg");
+
+            let file = fs::File::create(parent);
+            let result = file.unwrap().write_all(input.as_bytes());
+
+            if result.is_err() {
+                println!("error");
+            }
         }
     }
 }
