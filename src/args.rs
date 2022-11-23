@@ -34,11 +34,8 @@ pub enum Platform {
     Apple,
 }
 
-// Parse shell arguments and assign defaults if `None`
-pub fn parse_args() -> Result<Args, String> {
-    let mut args = Args::parse();
-    let cwd = env::current_dir().unwrap();
-
+// Validate shell arguments and assign defaults if `None`
+pub fn validate_args(mut args: Args) -> Result<Args, String> {
     if !args.source.exists() {
         return Err("Source file does not exists".to_string());
     }
@@ -48,7 +45,9 @@ pub fn parse_args() -> Result<Args, String> {
     }
 
     if args.output.is_none() {
+        let cwd = env::current_dir().unwrap();
         let mut output_path = PathBuf::new();
+
         output_path.push(cwd);
         output_path.push("output");
 
@@ -56,4 +55,43 @@ pub fn parse_args() -> Result<Args, String> {
     }
 
     return Ok(args);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_assign_default_platforms() {
+        let args = Args {
+            source: PathBuf::from("sample.svg"),
+            platforms: Option::None,
+            fill: false,
+            output: Option::from(PathBuf::from("here")),
+        };
+        let result = validate_args(args);
+
+        assert_eq!(result.is_err(), false);
+        assert_eq!(result.unwrap().platforms.unwrap(), Vec::from([Platform::Web, Platform::Modern]));
+    }
+
+    #[test]
+    fn test_assign_default_output() {
+        let args = Args {
+            source: PathBuf::from("sample.svg"),
+            platforms: Option::from(Vec::from([Platform::Web, Platform::Modern])),
+            fill: false,
+            output: Option::None,
+        };
+        let result = validate_args(args);
+
+        let cwd = env::current_dir().unwrap();
+        let mut path = PathBuf::new();
+
+        path.push(cwd);
+        path.push("output");
+
+        assert_eq!(result.is_err(), false);
+        assert_eq!(result.unwrap().output.unwrap().to_str(), path.to_str());
+    }
 }
