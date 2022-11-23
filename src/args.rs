@@ -20,6 +20,10 @@ pub struct Args {
     #[arg(value_name = "source_image", value_hint = clap::ValueHint::DirPath)]
     // Output folder
     pub output: Option<PathBuf>,
+
+    #[arg(short = 't', default_value_t = false)]
+    // Generate HTML template
+    pub template: bool,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug, Hash)]
@@ -68,6 +72,7 @@ mod tests {
             platforms: Option::None,
             fill: false,
             output: Option::from(PathBuf::from("here")),
+            template: false,
         };
         let result = validate_args(args);
 
@@ -82,6 +87,7 @@ mod tests {
             platforms: Option::from(Vec::from([Platform::Web, Platform::Modern])),
             fill: false,
             output: Option::None,
+            template: false,
         };
         let result = validate_args(args);
 
