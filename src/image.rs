@@ -1,28 +1,26 @@
-use std::path::{PathBuf};
-use std::fs;
-use std::{collections::HashMap, io::Write};
-use std::ffi::OsStr;
+use std::{collections::HashMap};
 
-use crate::args::{Args, Platform};
+use crate::args::Platform;
 
-struct OutputFile {
+struct Target {
     size: u32,
     name: String,
 }
 
-pub fn generate_image(args: Args) {
-    let size_map: HashMap<Platform, Vec<OutputFile> > = HashMap::from([
-        (Platform::Web, vec![OutputFile{ size: 32, name: "favicon.ico".to_string() }]),
-        (Platform::Android, vec![OutputFile{ size: 192, name: "192.png".to_string() }, OutputFile{ size: 512, name: "512.png".to_string() }]),
-        (Platform::Apple, vec![OutputFile{ size: 180, name: "apple_touch_icon.png".to_string() }]),
-    ]);
-    
-    // TODO: use this to check if should rasterize or not
-    let ext = args.source.extension()
-        .and_then(OsStr::to_str)
-        .unwrap();
+pub struct OutputFile {
+    pub name: String,
+    pub data: Vec<u8>,
+}
 
-    let input = fs::read_to_string(args.source).unwrap();
+pub fn generate_image(
+    input: String,
+    platforms: Vec<Platform>,
+) -> Vec<OutputFile> {
+    let size_map: HashMap<Platform, Vec<Target> > = HashMap::from([
+        (Platform::Web, vec![Target{ size: 32, name: "favicon.ico".to_string() }]),
+        (Platform::Android, vec![Target{ size: 192, name: "192.png".to_string() }, Target{ size: 512, name: "512.png".to_string() }]),
+        (Platform::Apple, vec![Target{ size: 180, name: "apple_touch_icon.png".to_string() }]),
+    ]);
 
     let opts = resvg::usvg::Options::default();
     let svg = resvg::usvg::Tree::from_str(
@@ -30,46 +28,39 @@ pub fn generate_image(args: Args) {
         &opts.to_ref(),
     ).unwrap();
 
-    let output_folder = args.output.unwrap();
+    let mut results: Vec<OutputFile> = vec![];
 
-    for platform in args.platforms.unwrap().iter() {
-        let sizes = size_map.get(platform);
+    for platform in platforms.iter() {
+        let sizes = size_map.get(platform).unwrap();
 
-        if !sizes.is_none() {
-            let target = sizes.unwrap();
+        for output in sizes.iter() {
+            let mut pixmap = resvg::tiny_skia::Pixmap::new(
+                output.size, 
+                output.size,
+            ).unwrap();
 
-            for output in target.iter() {
-                let mut pixmap = resvg::tiny_skia::Pixmap::new(
-                    output.size, 
-                    output.size,
-                ).unwrap();
+            resvg::render(
+                &svg,
+                resvg::usvg::FitTo::Size(output.size, output.size),
+                resvg::tiny_skia::Transform::default(),
+             pixmap.as_mut(),
+            ).unwrap();
 
-                resvg::render(
-                    &svg,
-                    resvg::usvg::FitTo::Size(output.size, output.size),
-                    resvg::tiny_skia::Transform::default(),
-                 pixmap.as_mut(),
-                ).unwrap();
-
-                let mut parent = PathBuf::from(output_folder.as_os_str());
-                parent.push(&output.name);
-
-                let result = pixmap.save_png(parent);
-
-                if result.is_err() {    
-                    println!("error")
-                }
-            }
-        } else {
-            let mut parent = PathBuf::from(output_folder.as_os_str());
-            parent.push("icon.svg");
-
-            let file = fs::File::create(parent);
-            let result = file.unwrap().write_all(input.as_bytes());
-
-            if result.is_err() {
-                println!("error");
-            }
+            results.push(OutputFile { name: output.name.clone(), data: pixmap.data().to_vec() });
         }
     }
+
+    if platforms.contains(&Platform::Modern) {
+        results.push(
+            OutputFile{ name: "icon.svg".to_string(), data: input.as_bytes().to_vec() },
+        );
+    }
+
+    return results;
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
 }

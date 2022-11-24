@@ -1,5 +1,6 @@
 use std::process::exit;
 use std::fs;
+use std::ffi::OsStr;
 use colored::Colorize;
 
 use clap::Parser;
@@ -28,5 +29,14 @@ fn main() {
         }
     }
 
-    image::generate_image(args);
+    let source_path = args.source.as_path();
+
+    // TODO: use this to check if should rasterize or not
+    let ext = source_path.extension()
+        .and_then(OsStr::to_str)
+        .unwrap();
+    
+    let input = fs::read_to_string(source_path).unwrap();
+
+    image::generate_image(input, args.platforms.unwrap());
 }
