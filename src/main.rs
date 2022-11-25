@@ -38,5 +38,5 @@ fn main() {
     
     let input = fs::read_to_string(source_path).unwrap();
 
-    image::generate_image(input, args.platforms.unwrap());
+    let image_data = image::generate_image_data(input, args.platforms.unwrap());
 }
