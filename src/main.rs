@@ -7,6 +7,7 @@ use clap::Parser;
 
 mod args;
 mod image;
+mod template;
 
 fn main() {
     let mut args = args::Args::parse();
