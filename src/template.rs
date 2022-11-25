@@ -2,7 +2,7 @@ use std::{collections::HashMap};
 
 use crate::args::Platform;
 
-const MANIFEST: &str = "{
+pub const MANIFEST: &str = "{
   \"icons\": [
     { \"src\": \"/192.png\", \"type\": \"image/png\", \"sizes\": \"192x192\" },
     { \"src\": \"/512.png\", \"type\": \"image/png\", \"sizes\": \"512x512\" }

@@ -10,3 +10,4 @@ clap = { version = "4.0", features = ["derive"] }
 colored = { version = "2" }
 resvg = "0.26.1"
 rasterize = "0.3.2"
+spinners = "4.1.0"
