@@ -1,7 +1,14 @@
 [package]
 name = "fav"
+description = "Generate a complete favicon set for your web applications with the desired target platforms"
+homepage = "https://fav.namchee.dev"
+repository = "https://github.com/Namchee/fav-cli"
+readme = "README.md"
+keywords = ["favicon", "generator"]
+categories = ["command-line-utilities"]
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -9,4 +16,3 @@ edition = "2021"
 clap = { version = "4.0", features = ["derive"] }
 colored = { version = "2" }
 resvg = "0.26.1"
-rasterize = "0.3.2"
