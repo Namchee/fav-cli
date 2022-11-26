@@ -2,6 +2,14 @@
 
 A command-line application version of [Fav](https://github.com/Namchee/fav). Generate a complete favicon set for your web applications with the desired target platforms.
 
+## Installation
+
+To install this project locally on your machine, execute this command on your terminal
+
+```shell
+cargo install favify
+```
+
 ## Usage
 
 ```shell
