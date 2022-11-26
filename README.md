@@ -1,11 +1,11 @@
-# Fav CLI
+# Favify
 
 A command-line application version of [Fav](https://github.com/Namchee/fav). Generate a complete favicon set for your web applications with the desired target platforms.
 
 ## Usage
 
 ```shell
-Usage: fav.exe [OPTIONS] <source_image>
+Usage: favify.exe [OPTIONS] <source_image>
 
 Arguments:
   <source_image>  Path to the source image, must be an SVG file

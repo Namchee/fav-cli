@@ -1,5 +1,5 @@
 [package]
-name = "fav"
+name = "favify"
 description = "Generate a complete favicon set for your web applications with the desired target platforms"
 homepage = "https://fav.namchee.dev"
 repository = "https://github.com/Namchee/fav-cli"
