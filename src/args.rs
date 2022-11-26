@@ -41,7 +41,7 @@ pub fn validate_args(mut args: Args) -> Result<Args, String> {
     }
 
     if args.platforms.is_none() {
-        args.platforms = Option::from(Vec::from([Platform::Web, Platform::Modern]));
+        args.platforms = Some(vec![Platform::Web, Platform::Modern]);
     }
 
     if args.output.is_none() {
@@ -51,10 +51,10 @@ pub fn validate_args(mut args: Args) -> Result<Args, String> {
         output_path.push(cwd);
         output_path.push("output");
 
-        args.output = Option::from(output_path);
+        args.output = Some(output_path);
     }
 
-    return Ok(args);
+    Ok(args)
 }
 
 #[cfg(test)]
@@ -65,22 +65,22 @@ mod tests {
     fn test_assign_default_platforms() {
         let args = Args {
             source: PathBuf::from("samples/sample.svg"),
-            platforms: Option::None,
-            output: Option::from(PathBuf::from("here")),
+            platforms: None,
+            output: Some(PathBuf::from("here")),
             template: false,
         };
         let result = validate_args(args);
 
-        assert_eq!(result.is_err(), false);
-        assert_eq!(result.unwrap().platforms.unwrap(), Vec::from([Platform::Web, Platform::Modern]));
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap().platforms.unwrap(), vec![Platform::Web, Platform::Modern]);
     }
 
     #[test]
     fn test_assign_default_output() {
         let args = Args {
             source: PathBuf::from("samples/sample.svg"),
-            platforms: Option::from(Vec::from([Platform::Web, Platform::Modern])),
-            output: Option::None,
+            platforms: Some(vec![Platform::Web, Platform::Modern]),
+            output: None,
             template: false,
         };
         let result = validate_args(args);
@@ -91,7 +91,7 @@ mod tests {
         path.push(cwd);
         path.push("output");
 
-        assert_eq!(result.is_err(), false);
+        assert!(result.is_ok());
         assert_eq!(result.unwrap().output.unwrap().to_str(), path.to_str());
     }
 }
