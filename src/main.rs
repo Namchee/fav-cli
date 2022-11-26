@@ -56,7 +56,7 @@ fn main() {
         let res = file.write_all(&output.data);
 
         if res.is_err() {
-            println!("❌ Failed to write {}", output.name);
+            println!("❌ Failed to write {}", output.name.red());
         }
     }
 
@@ -68,7 +68,7 @@ fn main() {
         let res = file.write_all(MANIFEST.as_bytes());
 
         if res.is_err() {
-            println!("❌ error");
+            println!("❌ Failed to write {}", "webmanifest".red());
         }
     }
 
@@ -80,7 +80,9 @@ fn main() {
         let res = file.write_all(template::generate_template(platforms).as_bytes());
 
         if res.is_err() {
-            println!("❌ err");
+            println!("❌ Failed to write {}", "HTML template".red());
         }
     }
+
+    println!("✔️ Favicons generated successfully")
 }

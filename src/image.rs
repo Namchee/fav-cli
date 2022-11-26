@@ -40,10 +40,15 @@ pub fn generate_image_data(
                 output.size,
             ).unwrap();
 
+            let (width, height) = get_scaled_size(output.size, (svg.size.width(), svg.size.height()));
+
             resvg::render(
                 &svg,
                 resvg::usvg::FitTo::Size(output.size, output.size),
-                resvg::tiny_skia::Transform::default(),
+                resvg::tiny_skia::Transform::from_translate(
+                    ((output.size as f64 / 2.0) - (width / 2.0)) as f32,
+                    ((output.size as f64 / 2.0) - (height / 2.0)) as f32,
+                ),
              pixmap.as_mut(),
             ).unwrap();
 
@@ -59,6 +64,18 @@ pub fn generate_image_data(
     }
 
     return results;
+}
+
+fn get_scaled_size(
+    size: u32,
+    (width, height): (f64, f64),
+) -> (f64, f64) {
+    let mut mult = width / size as f64;
+    if height > width {
+        mult = height / size as f64;
+    }
+
+    return (width / mult, height / mult);
 }
 
 #[cfg(test)]
@@ -109,5 +126,13 @@ mod tests {
 
         assert_eq!(has_mq.is_some(), true);
         assert_eq!(has_hq.is_some(), true);
+    }
+
+    #[test]
+    fn test_size_scaling() {
+        let target = 32;
+        let size: (f64, f64) = (9.0, 16.0);
+
+        assert_eq!((18.0, 32.0), get_scaled_size(target, size));
     }
 }

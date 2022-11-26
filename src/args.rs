@@ -68,7 +68,7 @@ mod tests {
     #[test]
     fn test_assign_default_platforms() {
         let args = Args {
-            source: PathBuf::from("sample.svg"),
+            source: PathBuf::from("samples/sample.svg"),
             platforms: Option::None,
             fill: false,
             output: Option::from(PathBuf::from("here")),
@@ -83,7 +83,7 @@ mod tests {
     #[test]
     fn test_assign_default_output() {
         let args = Args {
-            source: PathBuf::from("sample.svg"),
+            source: PathBuf::from("samples/sample.svg"),
             platforms: Option::from(Vec::from([Platform::Web, Platform::Modern])),
             fill: false,
             output: Option::None,
