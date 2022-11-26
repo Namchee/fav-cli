@@ -18,7 +18,7 @@ fn main() {
     match args::validate_args(args) {
         Ok(arguments) => args = arguments,
         Err(err) => {
-            println!("❌ {}", err);
+            println!("❌ {}", err.red());
             exit(0);
         },
     }
@@ -86,5 +86,5 @@ fn main() {
         }
     }
 
-    println!("✔️ Favicons generated successfully")
+    println!("✔️ {}", "Favicons generated successfully".green())
 }
