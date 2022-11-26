@@ -94,8 +94,8 @@ mod tests {
         let has_svg = result.iter().find(|x| x.name == "icon.svg");
         let has_else = result.iter().find(|x| x.name != "icon.svg");
 
-        assert_eq!(has_svg.is_some(), true);
-        assert_eq!(has_else.is_some(), false);
+        assert!(has_svg.is_some());
+        assert!(has_else.is_none());
     }
 
     #[test]
@@ -109,9 +109,9 @@ mod tests {
         let has_ico = result.iter().find(|x| x.name == "favicon.ico");
         let has_apple = result.iter().find(|x| x.name == "apple_touch_icon.png");
 
-        assert_eq!(has_svg.is_some(), true);
-        assert_eq!(has_ico.is_some(), true);
-        assert_eq!(has_apple.is_some(), true);
+        assert!(has_svg.is_some());
+        assert!(has_ico.is_some());
+        assert!(has_apple.is_some());
     }
 
     #[test]
@@ -124,8 +124,8 @@ mod tests {
         let has_mq = result.iter().find(|x| x.name == "192.png");
         let has_hq = result.iter().find(|x| x.name == "512.png");
 
-        assert_eq!(has_mq.is_some(), true);
-        assert_eq!(has_hq.is_some(), true);
+        assert!(has_mq.is_some());
+        assert!(has_hq.is_some());
     }
 
     #[test]
