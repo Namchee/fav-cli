@@ -42,6 +42,8 @@ fn main() {
         .unwrap();
 
     if ext != "svg" {
+        println!("❌ {}", "Source file must be an SVG file".red());
+        exit(0);
         // TODO: vectorize
     }
 

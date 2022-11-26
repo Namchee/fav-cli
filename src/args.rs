@@ -2,27 +2,23 @@ use clap::{Parser, ValueEnum};
 use std::{path::PathBuf, env};
 
 #[derive(Parser)]
-#[command(version, about)]
+#[command(version, about, long_about = None)]
 /// Generate a complete and ready-to-use favicons for your websites
 pub struct Args {
-    #[arg(value_name = "source_image", value_hint = clap::ValueHint::DirPath)]
     // Image source
+    #[arg(value_name = "source_image", value_hint = clap::ValueHint::DirPath, help = "Path to the source image, must be an SVG file")]
     pub source: PathBuf,
 
-    #[arg(short = 'p', value_name = "platforms", value_enum)]
     // Platforms that should be supported
+    #[arg(short = 'p', long, value_name = "platforms", value_enum, help = "Platforms that should be supported")]
     pub platforms: Option<Vec<Platform> >,
 
-    #[arg(short = 'f', value_name = "fill", default_value_t = false)]
-    // Ignore original aspect ratio from the image source
-    pub fill: bool,
-
-    #[arg(value_name = "source_image", value_hint = clap::ValueHint::DirPath)]
     // Output folder
+    #[arg(value_name = "output", short = 'o', long, value_hint = clap::ValueHint::DirPath, help = "Output folder destination, will be created if it does not exist")]
     pub output: Option<PathBuf>,
 
-    #[arg(short = 't', default_value_t = false)]
     // Generate HTML template
+    #[arg(short = 't', long, default_value_t = false, help = "Generate a quick-start HTML template")]
     pub template: bool,
 }
 
@@ -70,7 +66,6 @@ mod tests {
         let args = Args {
             source: PathBuf::from("samples/sample.svg"),
             platforms: Option::None,
-            fill: false,
             output: Option::from(PathBuf::from("here")),
             template: false,
         };
@@ -85,7 +80,6 @@ mod tests {
         let args = Args {
             source: PathBuf::from("samples/sample.svg"),
             platforms: Option::from(Vec::from([Platform::Web, Platform::Modern])),
-            fill: false,
             output: Option::None,
             template: false,
         };
