@@ -6,11 +6,13 @@ use std::ffi::OsStr;
 
 use colored::Colorize;
 use clap::Parser;
+use converter::get_vectorized_image;
 use template::MANIFEST;
 
 mod args;
 mod image;
 mod template;
+mod converter;
 
 fn main() {
     let mut args = args::Args::parse();
@@ -40,14 +42,14 @@ fn main() {
     let ext = source_path.extension()
         .and_then(OsStr::to_str)
         .unwrap();
+    let input: String;
 
     if ext != "svg" {
-        println!("❌ {}", "Source file must be an SVG file".red());
-        exit(0);
-        // TODO: vectorize
+        input = get_vectorized_image(args.source);
+    } else {
+        input = fs::read_to_string(source_path).unwrap()
     }
 
-    let input = fs::read_to_string(source_path).unwrap();
     let image_data = image::generate_image_data(input, platforms.clone());
 
     for output in image_data.iter() {

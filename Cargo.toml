@@ -19,3 +19,5 @@ exclude = [
 clap = { version = "4.0", features = ["derive"] }
 colored = { version = "2" }
 resvg = "0.26.1"
+visioncortex = "0.8.0"
+image = "0.24.5"
