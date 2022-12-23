@@ -6,7 +6,7 @@ use std::{path::PathBuf, env};
 /// Generate a complete and ready-to-use favicons for your websites
 pub struct Args {
     // Image source
-    #[arg(value_name = "source_image", value_hint = clap::ValueHint::DirPath, help = "Path to the source image, must be an SVG file")]
+    #[arg(value_name = "source_image", value_hint = clap::ValueHint::DirPath, help = "Path to the source image")]
     pub source: PathBuf,
 
     // Platforms that should be supported

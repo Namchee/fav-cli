@@ -16,7 +16,7 @@ cargo install favify
 Usage: favify.exe [OPTIONS] <source_image>
 
 Arguments:
-  <source_image>  Path to the source image, must be an SVG file
+  <source_image>  Path to the source image
 
 Options:
   -p, --platforms <platforms>  Platforms that should be supported [possible values: web, modern, android, apple]
