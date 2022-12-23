@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use visioncortex::{Color, ColorImage, CompoundPath, PointF64};
+use visioncortex::{Color, ColorImage, CompoundPath, PointF64, PathSimplifyMode};
 use visioncortex::color_clusters::{Runner, RunnerConfig, KeyingAction, HIERARCHICAL_MAX};
 
 type Dimension = (usize, usize);
@@ -38,14 +38,15 @@ pub fn get_vectorized_image(p: PathBuf) -> String {
 
     for &cluster_index in view.clusters_output.iter().rev() {
         let cluster = view.get_cluster(cluster_index);
+        
         let p = cluster.to_compound_path(
             &view,
             false,
-            visioncortex::PathSimplifyMode::Spline,
+            PathSimplifyMode::Polygon,
             180.0,
             4.0,
-            12,
-            45.0,
+            16,
+            30.0,
         );
 
         paths.push(SvgPath{path: p, color: cluster.residue_color()});
