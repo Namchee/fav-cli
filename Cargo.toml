@@ -6,7 +6,7 @@ repository = "https://github.com/Namchee/fav-cli"
 readme = "README.md"
 keywords = ["favicon", "generator"]
 categories = ["command-line-utilities"]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "MIT"
 exclude = [
@@ -19,3 +19,5 @@ exclude = [
 clap = { version = "4.0", features = ["derive"] }
 colored = { version = "2" }
 resvg = "0.26.1"
+visioncortex = "0.8.0"
+image = "0.24.5"

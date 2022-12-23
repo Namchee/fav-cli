@@ -1,14 +1,16 @@
-use std::io::Write;
-use std::process::exit;
-use std::fs;
-use std::path::PathBuf;
 use std::ffi::OsStr;
+use std::fs;
+use std::io::Write;
+use std::path::PathBuf;
+use std::process::exit;
 
-use colored::Colorize;
 use clap::Parser;
+use colored::Colorize;
+use converter::get_vectorized_image;
 use template::MANIFEST;
 
 mod args;
+mod converter;
 mod image;
 mod template;
 
@@ -20,7 +22,7 @@ fn main() {
         Err(err) => {
             println!("❌ {}", err.red());
             exit(0);
-        },
+        }
     }
 
     let platforms = args.platforms.unwrap();
@@ -34,20 +36,16 @@ fn main() {
             exit(0);
         }
     }
-    
+
     let source_path = args.source.as_path();
 
-    let ext = source_path.extension()
-        .and_then(OsStr::to_str)
-        .unwrap();
+    let ext = source_path.extension().and_then(OsStr::to_str).unwrap();
+    let input = if ext != "svg" {
+        get_vectorized_image(args.source)
+    } else {
+        fs::read_to_string(source_path).unwrap()
+    };
 
-    if ext != "svg" {
-        println!("❌ {}", "Source file must be an SVG file".red());
-        exit(0);
-        // TODO: vectorize
-    }
-
-    let input = fs::read_to_string(source_path).unwrap();
     let image_data = image::generate_image_data(input, platforms.clone());
 
     for output in image_data.iter() {

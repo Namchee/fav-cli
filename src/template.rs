@@ -1,4 +1,4 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
 use crate::args::Platform;
 
@@ -12,17 +12,31 @@ pub const MANIFEST: &str = "{
 
 pub fn generate_template(platforms: Vec<Platform>) -> String {
     let size_map: HashMap<Platform, String> = HashMap::from([
-        (Platform::Web, "<link rel=\"icon\" href=\"/favicon.ico\" sizes=\"any\">".to_string()),
-        (Platform::Modern, "<link rel=\"icon\" href=\"/icon.svg\" type=\"image/svg+xml\">".to_string()),
-        (Platform::Android, "<link rel=\"manifest\" href=\"/manifest.webmanifest\">".to_string()),
-        (Platform::Apple, "<link rel=\"apple-touch-icon\" href=\"/apple-touch-icon.png\">".to_string()),
+        (
+            Platform::Web,
+            "<link rel=\"icon\" href=\"/favicon.ico\" sizes=\"any\">".to_string(),
+        ),
+        (
+            Platform::Modern,
+            "<link rel=\"icon\" href=\"/icon.svg\" type=\"image/svg+xml\">".to_string(),
+        ),
+        (
+            Platform::Android,
+            "<link rel=\"manifest\" href=\"/manifest.webmanifest\">".to_string(),
+        ),
+        (
+            Platform::Apple,
+            "<link rel=\"apple-touch-icon\" href=\"/apple-touch-icon.png\">".to_string(),
+        ),
     ]);
 
-    let tags: Vec<String> = platforms.iter()
-      .map(|p| size_map.get(p).unwrap().to_owned())
-      .collect();
+    let tags: Vec<String> = platforms
+        .iter()
+        .map(|p| size_map.get(p).unwrap().to_owned())
+        .collect();
 
-    return format!("<!DOCTYPE html>
+    format!(
+        "<!DOCTYPE html>
 <html>
 <head>
   <meta charset=\"UTF-8\">
@@ -37,18 +51,25 @@ pub fn generate_template(platforms: Vec<Platform>) -> String {
 </body>
 </html>
 ",
-  favicons = tags.join("\n  "));
+        favicons = tags.join("\n  ")
+    )
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn test_generate_template() {
-    let platforms = vec![Platform::Web, Platform::Modern, Platform::Android, Platform::Apple];
+    #[test]
+    fn test_generate_template() {
+        let platforms = vec![
+            Platform::Web,
+            Platform::Modern,
+            Platform::Android,
+            Platform::Apple,
+        ];
 
-    assert_eq!("<!DOCTYPE html>
+        assert_eq!(
+            "<!DOCTYPE html>
 <html>
 <head>
   <meta charset=\"UTF-8\">
@@ -65,6 +86,8 @@ mod tests {
 
 </body>
 </html>
-", generate_template(platforms))
-  }
+",
+            generate_template(platforms)
+        )
+    }
 }

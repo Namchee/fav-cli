@@ -1,24 +1,35 @@
 use clap::{Parser, ValueEnum};
-use std::{path::PathBuf, env};
+use std::{env, path::PathBuf};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 /// Generate a complete and ready-to-use favicons for your websites
 pub struct Args {
     // Image source
-    #[arg(value_name = "source_image", value_hint = clap::ValueHint::DirPath, help = "Path to the source image, must be an SVG file")]
+    #[arg(value_name = "source_image", value_hint = clap::ValueHint::DirPath, help = "Path to the source image")]
     pub source: PathBuf,
 
     // Platforms that should be supported
-    #[arg(short = 'p', long, value_name = "platforms", value_enum, help = "Platforms that should be supported")]
-    pub platforms: Option<Vec<Platform> >,
+    #[arg(
+        short = 'p',
+        long,
+        value_name = "platforms",
+        value_enum,
+        help = "Platforms that should be supported"
+    )]
+    pub platforms: Option<Vec<Platform>>,
 
     // Output folder
     #[arg(value_name = "output", short = 'o', long, value_hint = clap::ValueHint::DirPath, help = "Output folder destination, will be created if it does not exist")]
     pub output: Option<PathBuf>,
 
     // Generate HTML template
-    #[arg(short = 't', long, default_value_t = false, help = "Generate a quick-start HTML template")]
+    #[arg(
+        short = 't',
+        long,
+        default_value_t = false,
+        help = "Generate a quick-start HTML template"
+    )]
     pub template: bool,
 }
 
@@ -41,7 +52,7 @@ pub fn validate_args(mut args: Args) -> Result<Args, String> {
     }
 
     if args.platforms.is_none() {
-        args.platforms = Some(vec![Platform::Web, Platform::Modern]);
+        args.platforms = Option::from(Vec::from([Platform::Web, Platform::Modern]));
     }
 
     if args.output.is_none() {
@@ -51,7 +62,7 @@ pub fn validate_args(mut args: Args) -> Result<Args, String> {
         output_path.push(cwd);
         output_path.push("output");
 
-        args.output = Some(output_path);
+        args.output = Option::from(output_path);
     }
 
     Ok(args)
@@ -65,22 +76,25 @@ mod tests {
     fn test_assign_default_platforms() {
         let args = Args {
             source: PathBuf::from("samples/sample.svg"),
-            platforms: None,
-            output: Some(PathBuf::from("here")),
+            platforms: Option::None,
+            output: Option::from(PathBuf::from("here")),
             template: false,
         };
         let result = validate_args(args);
 
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap().platforms.unwrap(), vec![Platform::Web, Platform::Modern]);
+        assert_eq!(result.is_err(), false);
+        assert_eq!(
+            result.unwrap().platforms.unwrap(),
+            Vec::from([Platform::Web, Platform::Modern])
+        );
     }
 
     #[test]
     fn test_assign_default_output() {
         let args = Args {
             source: PathBuf::from("samples/sample.svg"),
-            platforms: Some(vec![Platform::Web, Platform::Modern]),
-            output: None,
+            platforms: Option::from(Vec::from([Platform::Web, Platform::Modern])),
+            output: Option::None,
             template: false,
         };
         let result = validate_args(args);
@@ -91,7 +105,7 @@ mod tests {
         path.push(cwd);
         path.push("output");
 
-        assert!(result.is_ok());
+        assert_eq!(result.is_err(), false);
         assert_eq!(result.unwrap().output.unwrap().to_str(), path.to_str());
     }
 }
