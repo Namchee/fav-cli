@@ -90,3 +90,28 @@ fn get_svg_string(
 
     lines.join("\n")
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use resvg::usvg::{Tree, Options};
+
+    #[test]
+    fn test_get_svg_string() {
+        let paths: Vec<SvgPath> = vec![
+            SvgPath{path: CompoundPath::new(), color: Color { r: 1, g: 2, b: 3, a: 30 } },
+            SvgPath{path: CompoundPath::new(), color: Color { r: 4, g: 5, b: 6, a: 25 } },
+            SvgPath{path: CompoundPath::new(), color: Color { r: 1, g: 2, b: 3, a: 50 } },
+        ];
+        let dimension = (64, 64);
+
+        let svg_string = get_svg_string(paths, dimension);
+
+        let svg = Tree::from_str(
+            &svg_string.as_str(),
+            &Options::default().to_ref(),
+        );
+
+        assert!(svg.is_ok());
+    }
+}
