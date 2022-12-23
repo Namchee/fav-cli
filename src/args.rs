@@ -1,5 +1,5 @@
 use clap::{Parser, ValueEnum};
-use std::{path::PathBuf, env};
+use std::{env, path::PathBuf};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -10,15 +10,26 @@ pub struct Args {
     pub source: PathBuf,
 
     // Platforms that should be supported
-    #[arg(short = 'p', long, value_name = "platforms", value_enum, help = "Platforms that should be supported")]
-    pub platforms: Option<Vec<Platform> >,
+    #[arg(
+        short = 'p',
+        long,
+        value_name = "platforms",
+        value_enum,
+        help = "Platforms that should be supported"
+    )]
+    pub platforms: Option<Vec<Platform>>,
 
     // Output folder
     #[arg(value_name = "output", short = 'o', long, value_hint = clap::ValueHint::DirPath, help = "Output folder destination, will be created if it does not exist")]
     pub output: Option<PathBuf>,
 
     // Generate HTML template
-    #[arg(short = 't', long, default_value_t = false, help = "Generate a quick-start HTML template")]
+    #[arg(
+        short = 't',
+        long,
+        default_value_t = false,
+        help = "Generate a quick-start HTML template"
+    )]
     pub template: bool,
 }
 
@@ -54,7 +65,7 @@ pub fn validate_args(mut args: Args) -> Result<Args, String> {
         args.output = Option::from(output_path);
     }
 
-    return Ok(args);
+    Ok(args)
 }
 
 #[cfg(test)]
@@ -72,7 +83,10 @@ mod tests {
         let result = validate_args(args);
 
         assert_eq!(result.is_err(), false);
-        assert_eq!(result.unwrap().platforms.unwrap(), Vec::from([Platform::Web, Platform::Modern]));
+        assert_eq!(
+            result.unwrap().platforms.unwrap(),
+            Vec::from([Platform::Web, Platform::Modern])
+        );
     }
 
     #[test]
